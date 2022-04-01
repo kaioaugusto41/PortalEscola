@@ -71,7 +71,6 @@ def cadastro(request):
                 user = Acessos.objects.get(cpf_usuario=cpf)
                 #2.2 Validando se o cpf fornecido possui permissão para se cadastrar como Professor
                 if user.tipo_usuario != 'Professor':
-                    print(user.tipo_usuario)
                     print("Usuário não permitido para esse tipo de acesso!")
                     redirect('cadastro')
                 #2.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
@@ -93,16 +92,22 @@ def cadastro(request):
 
             #3 Validando a entrada de coordenadores
             if tipo_usuario == 'coordenador':
+                #3.1 Pegando do banco de dados de acessos o coordenador com o cpf fornecido
                 user = Acessos.objects.get(cpf_usuario=cpf)
+                #3.2 Validando se o cpf fornecido possui permissão para se cadastrar como Coordenador
                 if user.tipo_usuario != 'Coordenador':
                     print("Usuário não permitido para esse tipo de acesso!")
                     redirect('cadastro')
+                #3.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
                 elif str(user) != email:
                     print("Usuário não corresponde com a base de dados cadastrada!")
                     redirect('cadastro')
+                #3.4 Se passado por todas as validações o coordenador será cadastrado e redirecionado para a tela de login
                 else:
+                    #3.4.1 Criando e salvando usuário no banco de dados de usuários do django
                     user = User.objects.create_user(email=email, username=email, password=senha)
                     user.save()
+                    #3.4.2 Criando e salvando dados do coordenador em outra tabela de Aluno criada
                     coordenador = Coordenador.objects.create(nome_coordenador=nome_completo, email_coordenador=email, cpf_coordenador=cpf, tipo_coordenador=tipo_usuario)
                     coordenador.save()
                     print("Usuário cadastrado com sucesso!")
