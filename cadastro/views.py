@@ -4,7 +4,8 @@ from usuarios.models import Acessos, Aluno, Professor, Coordenador
 
 def cadastro(request):
     if request.method == "POST":
-        nome_completo = request.POST.get('nome_completo', False)
+        nome = request.POST.get('nome', False)
+        sobrenome = request.POST.get('sobrenome', False)
         email = request.POST.get('email', False)
         cpf = request.POST.get('cpf', False)
         senha = request.POST.get('senha', False)
@@ -21,8 +22,8 @@ def cadastro(request):
             print("Usuário já cadastrado!")
             redirect('cadastro')
 
-        #3 Valida se foi dada permissão na base de dados para o CPF fornecido
-        elif Acessos.objects.filter(cpf_usuario=cpf).exists() == False:
+        #3 Valida se foi dada permissão na base de dados para o email fornecido
+        elif Acessos.objects.filter(email_usuario=email).exists() == False:
             print("Usuário não encontrado!")
             redirect('cadastro')
 
@@ -41,77 +42,92 @@ def cadastro(request):
 
             #1 Validando a entrada de alunos
             if tipo_usuario == 'aluno':
+
                 #1.1 Pegando do banco de dados de acessos o aluno com o cpf fornecido
-                user = Acessos.objects.get(cpf_usuario=cpf)
-                #1.2 Validando se o cpf fornecido possui permissão para se cadastrar como Aluno
+                user = Acessos.objects.get(email_usuario=email)
+
+                #1.2 Validando se o email fornecido possui permissão para se cadastrar como Aluno
                 if user.tipo_usuario != 'Aluno':
                     print(user.tipo_usuario, )
                     print("Aluno não permitido para esse tipo de acesso!")
                     redirect('cadastro')
-                #1.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
+
+#***************1.3 Validando se o email fornecido possui o cpf cadastrado na base de dados de acessos
                 elif str(user) != email:
                     print("Aluno não corresponde com a base de dados cadastrada!")
                     redirect('cadastro')
+
                 #1.4 Se passado por todas as validações o aluno será cadastrado e redirecionado para a tela de login
                 else:
+
                     #1.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome ,last_name=sobrenome)
                     user.save()
+
                     #1.4.2 Criando e salvando dados do aluno em outra tabela de Aluno criada
-                    aluno = Aluno.objects.create(nome_aluno=nome_completo, email_aluno=email, cpf_aluno=cpf, tipo_aluno=tipo_usuario)
+                    aluno = Aluno.objects.create(nome_aluno=nome+" "+sobrenome, email_aluno=email, cpf_aluno=cpf, tipo_aluno=tipo_usuario,)
                     aluno.save()
                     print("Aluno cadastrado com sucesso!")
-                    print(nome_completo, cpf, senha, senha2, tipo_usuario)
                     return redirect('login')
 
 
             #2 validando a entrada de professores
             if tipo_usuario == 'professor':
-                #2.1 Pegando do banco de dados de acessos o professor com o cpf fornecido
-                user = Acessos.objects.get(cpf_usuario=cpf)
-                #2.2 Validando se o cpf fornecido possui permissão para se cadastrar como Professor
+
+                #2.1 Pegando do banco de dados de acessos o professor com o email fornecido
+                user = Acessos.objects.get(email_usuario=email)
+
+                #2.2 Validando se o email fornecido possui permissão para se cadastrar como Professor
                 if user.tipo_usuario != 'Professor':
                     print("Usuário não permitido para esse tipo de acesso!")
                     redirect('cadastro')
-                #2.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
+
+#***************2.3 Validando se o email fornecido possui o cpf cadastrado na base de dados de acessos
                 elif str(user) != email:
                     print("Usuário não corresponde com a base de dados cadastrada!")
                     redirect('cadastro')
+
                 #2.4 Se passado por todas as validações o professor será cadastrado e redirecionado para a tela de login
                 else:
+
                     #2.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome ,last_name=sobrenome)
                     user.save()
+
                     #2.4.2 Criando e salvando dados do professor em outra tabela de Aluno criada
-                    professor = Professor.objects.create(nome_professor=nome_completo, email_professor=email, cpf_professor=cpf, tipo_professor=tipo_usuario)
+                    professor = Professor.objects.create(nome_professor=nome+" "+sobrenome, email_professor=email, cpf_professor=cpf, tipo_professor=tipo_usuario)
                     professor.save()
                     print("Usuário cadastrado com sucesso!")
-                    print(nome_completo, cpf, senha, senha2, tipo_usuario)
                     return redirect('login')
 
 
             #3 Validando a entrada de coordenadores
             if tipo_usuario == 'coordenador':
-                #3.1 Pegando do banco de dados de acessos o coordenador com o cpf fornecido
-                user = Acessos.objects.get(cpf_usuario=cpf)
-                #3.2 Validando se o cpf fornecido possui permissão para se cadastrar como Coordenador
+
+                #3.1 Pegando do banco de dados de acessos o coordenador com o email fornecido
+                user = Acessos.objects.get(email_usuario=email)
+
+                #3.2 Validando se o email fornecido possui permissão para se cadastrar como Coordenador
                 if user.tipo_usuario != 'Coordenador':
                     print("Usuário não permitido para esse tipo de acesso!")
                     redirect('cadastro')
-                #3.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
+
+#***************3.3 Validando se o cpf fornecido possui o e-mail cadastrado na base de dados de acessos
                 elif str(user) != email:
                     print("Usuário não corresponde com a base de dados cadastrada!")
                     redirect('cadastro')
+
                 #3.4 Se passado por todas as validações o coordenador será cadastrado e redirecionado para a tela de login
                 else:
+
                     #3.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome ,last_name=sobrenome)
                     user.save()
+                    
                     #3.4.2 Criando e salvando dados do coordenador em outra tabela de Aluno criada
-                    coordenador = Coordenador.objects.create(nome_coordenador=nome_completo, email_coordenador=email, cpf_coordenador=cpf, tipo_coordenador=tipo_usuario)
+                    coordenador = Coordenador.objects.create(nome_coordenador=nome+" "+sobrenome, email_coordenador=email, cpf_coordenador=cpf, tipo_coordenador=tipo_usuario)
                     coordenador.save()
                     print("Usuário cadastrado com sucesso!")
-                    print(nome_completo, cpf, senha, senha2, tipo_usuario)
                     return redirect('login')
 
     else:

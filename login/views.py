@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
+from usuarios.models import Acessos
 
 def login(request):
     if request.method == "POST":

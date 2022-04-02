@@ -3,8 +3,8 @@ from django.db import models
 
 class Acessos(models.Model):
     nome_usuario = models.CharField(max_length=200)
-    email_usuario = models.CharField(max_length=200)
-    cpf_usuario = models.IntegerField(default=0, primary_key=True)
+    email_usuario = models.CharField(max_length=200, primary_key=True)
+    cpf_usuario = models.IntegerField(default=0)
     opcoes = (
         ('Aluno','Aluno'),
         ('Professor','Professor'),
@@ -18,8 +18,8 @@ class Acessos(models.Model):
 
 class Aluno(models.Model):
     nome_aluno = models.CharField(max_length=200)
-    email_aluno = models.CharField(max_length=200)
-    cpf_aluno = models.IntegerField(default=0, primary_key=True)
+    email_aluno = models.CharField(max_length=200, primary_key=True)
+    cpf_aluno = models.IntegerField(default=0)
     tipo_aluno = models.CharField(max_length=100)
 
     def __str__(self):
@@ -27,8 +27,8 @@ class Aluno(models.Model):
 
 class Professor(models.Model):
     nome_professor = models.CharField(max_length=200)
-    email_professor = models.CharField(max_length=200)
-    cpf_professor = models.IntegerField(default=0, primary_key=True)
+    email_professor = models.CharField(max_length=200, primary_key=True)
+    cpf_professor = models.IntegerField(default=0)
     tipo_professor = models.CharField(max_length=100)
 
     def __str__(self):
@@ -36,8 +36,8 @@ class Professor(models.Model):
 
 class Coordenador(models.Model):
     nome_coordenador = models.CharField(max_length=200)
-    email_coordenador = models.CharField(max_length=200)
-    cpf_coordenador = models.IntegerField(default=0, primary_key=True)
+    email_coordenador = models.CharField(max_length=200, primary_key=True)
+    cpf_coordenador = models.IntegerField(default=0)
     tipo_coordenador = models.CharField(max_length=100)
 
     def __str__(self):
