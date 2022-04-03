@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth, messages
 from usuarios.models import Acessos, Aluno, Professor, Coordenador
-import time
 
+
+
+# PÁGINA DE CADASTRO DE USUÁRIOS
 def cadastro(request):
 
     if request.method == "POST":
@@ -136,3 +138,40 @@ def cadastro(request):
         return render(request, 'cadastro.html')
         
     return render(request, 'cadastro.html')
+
+
+# PÁGINA DE CADASTRO DE ACESSOS
+def cadastro_acessos(request):
+
+    #1 Validando se o usuário está autenticado para cadastrar acessos
+    if not request.user.is_authenticated:
+
+        #1.1 Retornando o usuário para a página de login caso não esteja autenticado
+        return redirect('login')
+    
+    #2 Caso o usuário esteja autenticado...
+    else:
+
+        #2.1 Capturando o usuário logado
+        usuario = request.user
+
+        #2.2 Capturando usuário logado na base de acessos
+        usuario = Acessos.objects.filter(email_usuario=usuario)
+
+        #2.3 Capturando o tipo de usuário do usuário logado
+        usuario = usuario[0].tipo_usuario
+
+        #2.4 Dados que serão passados para a página renderizada(acessos.html)
+        dados = {
+
+            #Tipo do usuário autenticado
+            'tipo_usuario': usuario
+        }
+
+        #2.5 Se o usuário for do tipo Coordenador ele será redirecionado para a página de cadastro de acessos
+        if usuario == 'Coordenador':
+            return render(request, 'dash_coordenador/pages/cadastros/acessos.html', dados)
+
+        #2.6 Caso o usuário não seja do tipo Coordenador ele será redirecionado para a página inicial
+        else:
+            return redirect('dash')

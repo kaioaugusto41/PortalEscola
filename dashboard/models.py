@@ -1,6 +1,7 @@
 from django.db import models
 from usuarios.models import Coordenador
 
+#1 Tabela de comunicados que serão cadastrados por coordenadores
 class Comunicado(models.Model):
     titulo_comunicado = models.CharField(max_length=300)
     descricao_comunicado = models.TextField(max_length=300)
