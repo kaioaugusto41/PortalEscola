@@ -1,6 +1,7 @@
+from email import message
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from django.contrib import auth
+from django.contrib import auth, messages
 from usuarios.models import Acessos
 
 def login(request):
@@ -13,10 +14,14 @@ def login(request):
                 auth.login(request, user)
                 print("Login efetuado com sucesso!")
                 print(email, senha)
-                return redirect('dashboard')
+                return redirect('dash_aluno')
+                
+            else:
+                messages.error(request, 'Verifique se os dados inseridos estão corretos!')
+                redirect('login')
+        
         else:
-            print("Verifique se os dados inseridos estão corretos!")
+            messages.error(request, 'Verifique se os dados inseridos estão corretos!')
             redirect('login')
-        
-        
+    
     return render(request, 'login.html')

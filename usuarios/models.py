@@ -13,7 +13,7 @@ class Acessos(models.Model):
     tipo_usuario = models.CharField(max_length=100, choices=opcoes)
 
     def __str__(self):
-        return self.email_usuario
+        return str(self.cpf_usuario)
 
 
 class Aluno(models.Model):
