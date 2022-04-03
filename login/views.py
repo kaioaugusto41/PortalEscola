@@ -12,9 +12,11 @@ def login(request):
             user = auth.authenticate(request, username=email, password=senha)
             if user is not None:
                 auth.login(request, user)
-                print("Login efetuado com sucesso!")
-                print(email, senha)
-                return redirect('dash_aluno')
+                usuario = Acessos.objects.filter(email_usuario=email)
+                usuario = usuario[0].tipo_usuario
+                print(usuario)
+                return redirect('dash')
+                
                 
             else:
                 messages.error(request, 'Verifique se os dados inseridos estão corretos!')
@@ -25,3 +27,7 @@ def login(request):
             redirect('login')
     
     return render(request, 'login.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('login')

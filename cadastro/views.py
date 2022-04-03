@@ -62,7 +62,7 @@ def cadastro(request):
                 #1.4 Se passado por todas as validações o aluno será cadastrado e redirecionado para a tela de login
                 else:
                     #1.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome, last_name=sobrenome, tipo_usuario=tipo_usuario)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome, last_name=sobrenome)
                     user.save()
 
                     #1.4.2 Criando e salvando dados do aluno em outra tabela de Aluno criada
@@ -93,7 +93,7 @@ def cadastro(request):
                 else:
 
                     #2.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome, last_name=sobrenome, tipo_usuario=tipo_usuario)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome,last_name=sobrenome)
                     user.save()
 
                     #2.4.2 Criando e salvando dados do professor em outra tabela de Aluno criada
@@ -123,7 +123,7 @@ def cadastro(request):
                 else:
 
                     #3.4.1 Criando e salvando usuário no banco de dados de usuários do django
-                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome, last_name=sobrenome, tipo_usuario=tipo_usuario)
+                    user = User.objects.create_user(email=email, username=email, password=senha, first_name=nome , last_name=sobrenome)
                     user.save()
                     
                     #3.4.2 Criando e salvando dados do coordenador em outra tabela de Aluno criada
