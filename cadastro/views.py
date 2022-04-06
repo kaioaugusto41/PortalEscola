@@ -170,7 +170,7 @@ def cadastro_acessos(request):
 
         #2.5 Se o usuário for do tipo Coordenador ele será redirecionado para a página de cadastro de acessos
         if usuario == 'Coordenador':
-            return render(request, 'dash_coordenador/pages/cadastros/acessos.html', dados)
+            return render(request, 'dash_coordenador/pages/cadastros/teste.html', dados)
 
         #2.6 Caso o usuário não seja do tipo Coordenador ele será redirecionado para a página inicial
         else:

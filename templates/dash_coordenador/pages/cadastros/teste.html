@@ -1,0 +1,78 @@
+{% extends 'dash_coordenador/base.html' %}
+{% load static %}
+{% block content %}
+{% include 'dash_coordenador/partials/_menu.html' %}
+
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Cadastrar acessos</h4>
+                    {% include 'partials/_alertas.html' %}
+                    <br>
+                    <form class="forms-sample" action="{% url 'cadastro_acessos' %}" method='POST'>
+                      {% csrf_token %}
+                      <div class="form-group row">
+                        <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Nome</label>
+                        <div class="col-sm-9">
+                          <input type="text" name='nome' class="form-control" id="exampleInputUsername2" placeholder="Nome completo do usuário">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                          <input nome='email' type="email" class="form-control" id="exampleInputEmail2" placeholder="Email do usuário">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="exampleInputMobile" class="col-sm-3 col-form-label">CPF</label>
+                        <div class="col-sm-9">
+                          <input name='cpf' type="text" class="form-control" id="exampleInputMobile" placeholder="CPF do usuário">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Nível</label>
+                        <div style="width: 100%;" class="col-sm-9">
+                            <div class="form-group row">
+                              <div style="width: 100%;" class="col-sm-9">
+                                <select name='tipo_usuario' style="width: 100%;" class="form-control">
+                                  <option>Aluno</option>
+                                  <option>Professor</option>
+                                  <option>Coordenador</option>
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <button style='float: right;' type="submit" class="btn btn-primary mr-2">Cadastrar</button>
+                      <button style='float: right;' class="btn btn-dark">Cancelar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div style='height: 400px;' class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Acessos</h4>
+                    <br>
+                    <div style='height: 85%;' class="form-group">
+                      <select style='height: 100%;' multiple class="form-control" id="exampleFormControlSelect2">
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+
+{% include 'dash_coordenador/partials/_footer.html' %}
+{% endblock %}
