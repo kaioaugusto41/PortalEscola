@@ -1,3 +1,4 @@
+import email
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth, messages
@@ -7,7 +8,7 @@ from usuarios.models import Acessos, Aluno, Professor, Coordenador
 
 # PÁGINA DE CADASTRO DE USUÁRIOS
 def cadastro(request):
-
+    
     if request.method == "POST":
         nome = request.POST.get('nome', False)
         sobrenome = request.POST.get('sobrenome', False)
@@ -39,7 +40,7 @@ def cadastro(request):
 
         #5 Valida se o campo de Tipo Usuário não está em branco
         elif tipo_usuario == "Você é um...":
-            messages.error('O de tipo usuário não pode ficar vazio!')
+            messages.error(request, 'O campo de tipo usuário não pode ficar vazio!')
             redirect('cadastro')
 
         #6 Caso passe em todas as validações, será validada a entrada por tipo de permissão (Aluno, Professor e Coordenador)
@@ -134,6 +135,8 @@ def cadastro(request):
                     messages.success(request, 'Cadastro realizado com sucesso!')
                     return redirect('login')
 
+    
+
     else:
         return render(request, 'cadastro.html')
         
@@ -143,8 +146,42 @@ def cadastro(request):
 # PÁGINA DE CADASTRO DE ACESSOS
 def cadastro_acessos(request):
 
+    if request.method == 'POST':
+        nome = request.POST.get('nome', False)
+        email = request.POST.get('email', False)
+        cpf = request.POST.get('cpf', False)
+        tipo_usuario = request.POST.get('tipo_usuario', False)
+
+        if nome.strip() == '':
+            messages.error(request, 'O campo nome não pode ficar vazio')
+            return redirect('cadastro_acessos')
+        elif email.strip() == '':
+            messages.error(request, 'O campo email não pode ficar vazio')
+            return redirect('cadastro_acessos')
+        elif cpf.strip() == '':
+            messages.error(request, 'O campo CPF não pode ficar vazio')
+            return redirect('cadastro_acessos')
+        elif tipo_usuario == 'Selecione uma opção':
+            messages.error(request, 'O campo Nível não pode ficar vazio')
+            return redirect('cadastro_acessos')
+        elif Acessos.objects.filter(email_usuario=email).exists() == True:
+            messages.error(request, 'O acesso para o email fornecido já existe!')
+            return redirect('cadastro_acessos')
+        elif Acessos.objects.filter(cpf_usuario=cpf).exists() == True:
+            messages.error(request, 'O acesso para o CPF fornecido já existe!')
+            return redirect('cadastro_acessos')
+
+        else:
+            usuario = Acessos.objects.create(nome_usuario=nome, email_usuario=email, cpf_usuario=cpf, tipo_usuario=tipo_usuario)
+            usuario.save()
+            messages.success(request, 'Cadastro realizado com sucesso!')
+            return redirect('cadastro_acessos')
+        
+            
+
+
     #1 Validando se o usuário está autenticado para cadastrar acessos
-    if not request.user.is_authenticated:
+    elif not request.user.is_authenticated:
 
         #1.1 Retornando o usuário para a página de login caso não esteja autenticado
         return redirect('login')
@@ -161,17 +198,50 @@ def cadastro_acessos(request):
         #2.3 Capturando o tipo de usuário do usuário logado
         usuario = usuario[0].tipo_usuario
 
+        acessos = Acessos.objects.all()
+
         #2.4 Dados que serão passados para a página renderizada(acessos.html)
         dados = {
 
             #Tipo do usuário autenticado
-            'tipo_usuario': usuario
+            'tipo_usuario': usuario,
+            'acessos': acessos
         }
 
         #2.5 Se o usuário for do tipo Coordenador ele será redirecionado para a página de cadastro de acessos
         if usuario == 'Coordenador':
             return render(request, 'dash_coordenador/pages/cadastros/teste.html', dados)
-
         #2.6 Caso o usuário não seja do tipo Coordenador ele será redirecionado para a página inicial
-        else:
+        elif usuario != 'Coordenador':
             return redirect('dash')
+
+
+def deletar_acessos(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', False)
+        tipo_usuario = request.POST.get('tipo_usuario', False)
+        if str(request.user) == str(email):
+            messages.error(request, 'Não é possível deletar o acesso em uso, remova-o com outra conta!')
+            return redirect('cadastro_acessos')
+        else:
+            user = Acessos.objects.filter(email_usuario=email)
+            user.delete()
+            if tipo_usuario == 'Aluno':
+                user = Aluno.objects.filter(email_aluno=email)
+                user.delete()
+                user = User.objects.filter(email=email)
+                user.delete()
+            elif tipo_usuario == 'Professor':
+                user = Professor.objects.filter(email_professor=email)
+                user.delete()
+                user = User.objects.filter(email=email)
+                user.delete()
+            elif tipo_usuario == 'Coordenador':
+                user = Coordenador.objects.filter(email_coordenador=email)
+                user.delete()
+                user = User.objects.filter(email=email)
+                user.delete()
+            messages.success(request, 'Acesso removido com sucesso!')
+            return redirect('cadastro_acessos')
+    else:
+        return redirect('cadastro_acessos')

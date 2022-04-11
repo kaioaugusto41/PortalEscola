@@ -6,5 +6,8 @@ urlpatterns = [
     path('', views.cadastro, name='cadastro'),
 
     #2 URL para página de cadastro de acessos
-    path('/acessos', views.cadastro_acessos, name='cadastro_acessos')
+    path('/acessos', views.cadastro_acessos, name='cadastro_acessos'),
+
+    path('/deletar', views.deletar_acessos, name='deletar_acessos')
+
 ]

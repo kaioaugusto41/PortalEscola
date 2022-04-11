@@ -4,15 +4,16 @@
 {% include 'dash_coordenador/partials/_menu.html' %}
 
 
+      
         <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
+            {% include 'partials/_alertas.html' %}
             <div class="row">
               <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">Cadastrar acessos</h4>
-                    {% include 'partials/_alertas.html' %}
                     <br>
                     <form class="forms-sample" action="{% url 'cadastro_acessos' %}" method='POST'>
                       {% csrf_token %}
@@ -25,7 +26,7 @@
                       <div class="form-group row">
                         <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                          <input nome='email' type="email" class="form-control" id="exampleInputEmail2" placeholder="Email do usuário">
+                          <input name='email' type="email" class="form-control" id="exampleInputEmail2" placeholder="Email do usuário">
                         </div>
                       </div>
                       <div class="form-group row">
@@ -40,6 +41,7 @@
                             <div class="form-group row">
                               <div style="width: 100%;" class="col-sm-9">
                                 <select name='tipo_usuario' style="width: 100%;" class="form-control">
+                                  <option>Selecione uma opção</option>
                                   <option>Aluno</option>
                                   <option>Professor</option>
                                   <option>Coordenador</option>
@@ -49,7 +51,7 @@
                         </div>
                       </div>
                       <br>
-                      <button style='float: right;' type="submit" class="btn btn-primary mr-2">Cadastrar</button>
+                      <button name='cadastrar' style='float: right;' type="submit" class="btn btn-primary mr-2">Cadastrar</button>
                       <button style='float: right;' class="btn btn-dark">Cancelar</button>
                     </form>
                   </div>
@@ -60,13 +62,36 @@
                   <div class="card-body">
                     <h4 class="card-title">Acessos</h4>
                     <br>
-                    <div style='height: 85%;' class="form-group">
-                      <select style='height: 100%;' multiple class="form-control" id="exampleFormControlSelect2">
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
+                    <div style='height: 85%; overflow-y: scroll' class="form-group">
+                      
+                      {% if acessos %}
+                        {% for acesso in acessos %}
+                        <form class="forms-sample" action="{% url 'deletar_acessos' %}" method='POST'>
+                          {% csrf_token %}
+                          <div  class="col-12">
+                            <div class="preview-list">
+                              <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail"><div class="preview-icon bg-primary"><i class="mdi mdi-account"></i></div></div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                  <div class="flex-grow">
+                                    <h6 class="preview-subject">{{acesso.nome_usuario}}<h6/>
+                                    <input style='background: transparent; border: none;' readonly=True class="text-muted mb-0" name='email' type='text' value={{acesso.email_usuario}}><br><br>
+                                    <input style='background: transparent; border: none;' readonly=True class="text-muted mb-0" name='tipo_usuario' type='text' value={{acesso.tipo_usuario}}>
+                                  </div>
+                                  <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                                      <button style='background: transparent;' class="badge badge-outline-danger" type='submit'><a >Deletar</a></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                        {% endfor %}
+                      {% else %}
+                        <p class="text-muted mb-0">{{acesso.tipo_usuario}}</p>
+                      {% endif%}
+                    
+                      </div>
                     </div>
                   </div>
                 </div>
