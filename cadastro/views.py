@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth, messages
 from usuarios.models import Acessos, Aluno, Professor, Coordenador
+from dashboard.models import Comunicado
 
 
 
@@ -146,7 +147,10 @@ def cadastro(request):
 # PÁGINA DE CADASTRO DE ACESSOS
 def cadastro_acessos(request):
 
-    if request.method == 'POST':
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    elif request.method == 'POST':
         nome = request.POST.get('nome', False)
         email = request.POST.get('email', False)
         cpf = request.POST.get('cpf', False)
@@ -177,14 +181,7 @@ def cadastro_acessos(request):
             messages.success(request, 'Cadastro realizado com sucesso!')
             return redirect('cadastro_acessos')
         
-            
 
-
-    #1 Validando se o usuário está autenticado para cadastrar acessos
-    elif not request.user.is_authenticated:
-
-        #1.1 Retornando o usuário para a página de login caso não esteja autenticado
-        return redirect('login')
     
     #2 Caso o usuário esteja autenticado...
     else:
@@ -245,3 +242,34 @@ def deletar_acessos(request):
             return redirect('cadastro_acessos')
     else:
         return redirect('cadastro_acessos')
+
+
+
+
+def cadastro_comunicados(request):
+
+    if not request.user.is_authenticated:
+
+        return redirect('login')
+
+    elif request.method == 'POST':
+        titulo = request.POST.get('titulo', False)
+        descricao = request.POST.get('descricao', False)
+        canal = request.POST.get('canal', False)
+        print(titulo, descricao, canal)
+        return redirect('cadastro_comunicados')
+    
+    else:
+
+        usuario = request.user
+
+        usuario = Acessos.objects.filter(email_usuario=usuario)
+
+        usuario = usuario[0].tipo_usuario
+
+        dados = {
+            'comunicados': Comunicado.objects.all()
+        }
+
+        if usuario == 'Coordenador':
+            return render(request, 'dash_coordenador/pages/cadastros/comunicados.html', dados)

@@ -1,0 +1,97 @@
+{% extends 'dash_coordenador/base.html' %}
+{% load static %}
+{% block content %}
+{% include 'dash_coordenador/partials/_menu.html' %}
+
+
+      
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            {% include 'partials/_alertas.html' %}
+            <div class="row">
+              <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Cadastrar comunicados</h4>
+                    <br>
+                    <form class="forms-sample" action="{% url 'cadastro_comunicados' %}" method='POST'>
+                      {% csrf_token %}
+                      <div class="form-group row">
+                        <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Título</label>
+                        <div class="col-sm-9">
+                          <input type="text" name='titulo' class="form-control" id="exampleInputUsername2" placeholder="Digite o título do comunicado...">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Descrição</label>
+                        <div class="col-sm-9">
+                            <textarea name='descricao' placeholder='Descreva brevemente o comunicado...' class="form-control" id="exampleTextarea1" rows="4"></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Canal</label>
+                        <div style="width: 100%;" class="col-sm-9">
+                            <div class="form-group row">
+                              <div style="width: 100%;" class="col-sm-9">
+                                <select name='canal' style="width: 100%;" class="form-control">
+                                  <option>Selecione uma opção</option>
+                                  <option>Alunos</option>
+                                  <option>Professores</option>
+                                  <option>Todos</option>
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <button name='cadastrar' style='float: right;' type="submit" class="btn btn-primary mr-2">Cadastrar</button>
+                      <button style='float: right;' class="btn btn-dark">Cancelar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div style='height: 400px;' class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Comunicados</h4>
+                    <br>
+                    <div style='height: 85%; overflow-y: scroll' class="form-group">
+                      
+                      {% if comunicados %}
+                        {% for comunicado in comunicados %}
+                        <form class="forms-sample" action="{% url 'deletar_acessos' %}" method='POST'>
+                          {% csrf_token %}
+                          <div  class="col-12">
+                            <div class="preview-list">
+                              <div class="preview-item border-bottom">
+                                <div class="preview-thumbnail"><div class="preview-icon bg-primary"><i class="mdi mdi-alert-circle-outline"></i></div></div>
+                                <div class="preview-item-content d-sm-flex flex-grow">
+                                  <div class="flex-grow">
+                                    <h6 class="preview-subject">{{comunicado.titulo_comunicado}}<h6/>
+                                    <p style='background: transparent; border: none;' class="text-muted mb-0" type='text'>{{comunicado.texto_comunicado}}</p><br><br>
+                                    <input style='background: transparent; border: none;' readonly=True class="text-muted mb-0" name='tipo_usuario' type='text' value={{acesso.tipo_usuario}}>
+                                  </div>
+                                  <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                                      <button style='background: transparent;' class="badge badge-outline-danger" type='submit'><a >Deletar</a></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                        {% endfor %}
+                      {% else %}
+                        <p class="text-muted mb-0">{{acesso.tipo_usuario}}</p>
+                      {% endif%}
+                    
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+
+{% include 'dash_coordenador/partials/_footer.html' %}
+{% endblock %}
